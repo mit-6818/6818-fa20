@@ -10,7 +10,7 @@
 		return " ";
 	};
 	i = 0;
-	while((30>i)){
+	while((i<30)){
 		consolePrint(im, 30, 30);
 		p.x = i;
 		p.y = i;
