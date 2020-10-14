@@ -1,6 +1,6 @@
 #pragma once
 
-#include <experimental/optional>
+#include <optional>
 #include <vector>
 
 enum class Operation
@@ -11,7 +11,7 @@ enum class Operation
     // Stack:       S =>  S :: f.constants()[i]
     LoadConst,
 
-    // Description: push a  function onto the operand stack
+    // Description: push a function onto the operand stack
     // Mnemonic:    load_func i
     // Operand 0:   index of function  in enclosing function's list of functions
     // Stack:       S => S :: f.functions()[i]
@@ -46,19 +46,19 @@ enum class Operation
     // Description: push a reference to a local variable or free variable reference onto the operand stack
     // Mnemonic:    push_ref i
     // Operand 0:   index of local variable reference
-    // Stack:       S ==>  address_of(var) :: S
+    // Stack:       S ==>  S :: address_of(var)
     //                  where var = i < f.local_reference_vars.size() ? f.local_reference_vars[i]
     //                                                           :  f.free_vars[i - f.local_reference_vars.size()]
     PushReference,
 
-    // Description: loads the value of a reference onto the operand stack
+    // Description: load the value of a reference onto the operand stack
     // Mnemonic:    load_ref
     // Operand 0:   N/A
     // Operand 1:   reference to load from
     // Stack:       S :: operand 1 => S :: value_of(operand 1)
     LoadReference,
 
-    // Description: loads the value of a reference onto the operand stack
+    // Description: store value to a reference
     // Mnemonic:    store_ref
     // Operand 0:   N/A
     // Operand 1:   value to store
@@ -76,7 +76,7 @@ enum class Operation
     // Mnemonic:    field_load i
     // Operand 0:   index of the field's name within the enclosing function's names list
     // Operand 1:   record from which to load
-    // Stack:       S :: operand 1 => S :: record_value_of(operand, f.names[i])
+    // Stack:       S :: operand 1 => S :: record_value_of(operand 1, f.names[i])
     FieldLoad,
 
     // Description: store value into field of record
@@ -92,7 +92,7 @@ enum class Operation
     // Operand 0:   N/A
     // Operand 1:   the index to read from (can be arbitrary value. indexing adheres to semantics of Assignment #2)
     // Operand 2:   the record to read from
-    // Stack:       S :: operand 2 :: operand 1 => S
+    // Stack:       S :: operand 2 :: operand 1 => S :: record_value_of(operand 2, operand 1)
     IndexLoad,
 
     // Description: store value into index of record
@@ -132,8 +132,8 @@ enum class Operation
     // Operand 0:   N/A
     // Operand 1:   right value
     // Operand 2:   left value
-    // Result:      value of the operation as specified by the semantics of Assignment #2
-    // Stack:       S:: operand 2 :: operand 1 => S :: op(operand 2, operand 1)
+    // Result:      value of + operation as specified by the semantics of Assignment #2
+    // Stack:       S:: operand 2 :: operand 1 => S :: (operand 2) + (operand 1)
     Add,
 
     // Description: performs an arithmetic operation on two integer operands
@@ -150,7 +150,7 @@ enum class Operation
     // Mnemonic:    neg
     // Operand 0:   N/A
     // Operand 1:   value
-    // Stack:       S :: operand 1 => S:: - operand 1
+    // Stack:       S :: operand 1 => S:: -(operand 1)
     Neg,
 
     // Description: computes a comparison operation on two integer operands
@@ -183,7 +183,7 @@ enum class Operation
     // Mnemonic:    not
     // Operand 0:   N/A
     // Operand 1:   value
-    // Stack:       S :: operand 1 => S:: op(operand 1)
+    // Stack:       S :: operand 1 => S:: not(operand 1)
     Not,
 
     // Description: transfers execution of the function to a new instruction offset within the current function
@@ -228,7 +228,7 @@ enum class Operation
 
 struct Instruction
 {
-    Instruction(const Operation operation, std::experimental::optional<int32_t> operand0)
+    Instruction(const Operation operation, std::optional<int32_t> operand0)
     : operation(operation),
     operand0(operand0)
     {
@@ -236,7 +236,7 @@ struct Instruction
     }
 
     Operation operation;
-    std::experimental::optional<int32_t> operand0;
+    std::optional<int32_t> operand0;
 };
 
 typedef std::vector<Instruction> InstructionList;
